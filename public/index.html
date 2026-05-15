@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ET PUBG UC Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white font-sans min-h-screen">
+
+    <header class="bg-slate-800 p-5 text-center shadow-md">
+        <h1 class="text-3xl font-bold text-amber-500">ET PUBG UC Shop</h1>
+        <p class="text-sm text-gray-400 mt-1">Fast & Reliable Local Payment</p>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div onclick="openModal('60 UC', 195)" class="bg-slate-800 p-5 rounded-lg border border-slate-700 hover:border-amber-500 cursor-pointer text-center transition">
+            <img src="/uc-box60.png" alt="PUBG UC Pack" class="w-36 h-36 mx-auto block hover:scale-110 transition-transform duration-300">
+            <div class="p-5 text-center">
+                <div class="text-2xl font-bold text-amber-400">60 UC</div>
+                <div class="text-xl font-semibold mt-2">195 ETB</div>
+                <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded mt-3 inline-block">Best Value</span>
+            </div>
+        </div>
+        <div onclick="openModal('300 + 25 UC', 950)" class="bg-slate-800 p-5 rounded-lg border border-slate-700 hover:border-amber-500 cursor-pointer text-center transition">
+            <img src="/uc-box300.png" alt="PUBG UC Pack" class="w-36 h-36 mx-auto block hover:scale-110 transition-transform duration-300">
+            <div class="p-5 text-center">
+                <div class="text-2xl font-bold text-amber-400">300 + 25 UC</div>
+                <div class="text-xl font-semibold mt-2">950 ETB</div>
+                <span class="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded mt-3 inline-block">Best Value</span>
+            </div>
+        </div>
+        <div onclick="openModal('1500 + 300 UC', 4650)" class="bg-slate-800 p-5 rounded-lg border border-slate-700 hover:border-amber-500 cursor-pointer text-center transition">
+            <img src="/uc-box1500.png" alt="PUBG UC Pack" class="w-36 h-36 mx-auto block hover:scale-110 transition-transform duration-300">
+            <div class="p-5 text-center">
+                <div class="text-2xl font-bold text-amber-400">1500 + 300 UC</div>
+                <div class="text-xl font-semibold mt-2">4,650 ETB</div>
+                <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-1 rounded mt-3 inline-block">Popular</span>
+            </div>
+        </div>
+    </main>
+
+    <div id="checkoutModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 p-6 rounded-xl max-w-md w-full border border-slate-700 shadow-2xl">
+            
+            <div id="modalStepForm">
+                <h2 class="text-xl font-bold mb-4">Checkout: <span id="modalPackage" class="text-amber-400"></span></h2>
+                <form id="orderForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Player ID</label>
+                        <input type="text" id="playerId" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded text-white focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">In-game Player Name</label>
+                        <input type="text" id="playerName" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded text-white focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Your Full Name</label>
+                        <input type="text" id="fullName" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded text-white focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Phone Number</label>
+                        <input type="tel" id="phone" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded text-white focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Payment Method</label>
+                        <select id="paymentMethod" class="w-full p-2 bg-slate-900 border border-slate-700 rounded text-white focus:outline-none focus:border-amber-500">
+                            <option value="ebirr">E-Birr</option>
+                            <option value="telebirr">Telebirr</option>
+                            <option value="CBE">Commercial Bank of Ethiopia (CBE)</option>
+                        </select>
+                    </div>
+
+                    <div class="flex space-x-3 mt-6">
+                        <button type="button" onclick="closeModal()" class="w-1/2 bg-slate-700 py-2.5 rounded-lg font-semibold hover:bg-slate-600 transition">Cancel</button>
+                        <button type="submit" class="w-1/2 bg-amber-500 text-slate-900 py-2.5 rounded-lg font-bold hover:bg-amber-400 transition">Submit Order</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="modalStepInstructions" class="hidden text-center space-y-4">
+                <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">✓</div>
+                <h2 class="text-xl font-bold text-emerald-400">Order Registered!</h2>
+                <p class="text-sm text-gray-300">To complete your purchase, please transfer the following amount immediately:</p>
+                
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-2 text-left">
+                    <p class="text-sm text-gray-400">Amount: <span id="instructionPrice" class="text-white font-bold text-base"></span> ETB</p>
+                    <p class="text-sm text-gray-400">Method: <span id="instructionMethod" class="text-white font-bold uppercase"></span></p>
+                    <hr class="border-slate-800 my-2">
+                    
+                    <p class="text-xs font-semibold text-amber-400">Our Payment Accounts:</p>
+                    <p class="text-sm text-slate-300">📱 <span class="font-bold text-white">Telebirr / E-Birr:</span> 0912345678 (Abdiasis Mohamed)</p>
+                    <p class="text-sm text-slate-300">🏦 <span class="font-bold text-white">CBE Account:</span> 1000123456789 (Abdiasis Mohamed)</p>
+                </div>
+                
+                <p class="text-xs text-amber-500 bg-amber-500/10 p-2 rounded">Your package will be manually added to your account within 15-30 minutes after validation.</p>
+                
+                <button onclick="closeModal()" class="w-full bg-slate-700 py-2.5 rounded-lg font-bold hover:bg-slate-600 transition mt-2">
+                    Done, Back to Store
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="mt-20 p-6 border-t border-slate-800 text-center text-xs text-gray-600 w-full">
+        <p>© 2026 ET PUBG UC Shop. All rights reserved.</p>
+        <a href="/admin.html" class="hover:text-slate-500 transition mt-2 inline-block">Staff Login</a>
+    </footer>
+
+    <script>
+        let selectedPackage = '';
+        let selectedPrice = 0;
+
+        function openModal(pack, price) {
+            selectedPackage = pack;
+            selectedPrice = price;
+            
+            // Reset modal states back to default step
+            document.getElementById('modalStepForm').classList.remove('hidden');
+            document.getElementById('modalStepInstructions').classList.add('hidden');
+            
+            document.getElementById('modalPackage').innerText = pack;
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const selectedMethod = document.getElementById('paymentMethod').value;
+            const orderData = {
+                playerId: document.getElementById('playerId').value,
+                playerName: document.getElementById('playerName').value,
+                fullName: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value,
+                paymentMethod: selectedMethod,
+                packageUc: selectedPackage,
+                priceEtb: selectedPrice
+            };
+
+            // Post order details to database via Express Server
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            });
+
+            const result = await response.json();
+            if(result.success) {
+                // Populate instructions view with transfer details dynamically
+                document.getElementById('instructionPrice').innerText = selectedPrice.toLocaleString();
+                document.getElementById('instructionMethod').innerText = selectedMethod;
+                
+                // Toggle pop-up card view over to step 2 instructions
+                document.getElementById('modalStepForm').classList.add('hidden');
+                document.getElementById('modalStepInstructions').classList.remove('hidden');
+                
+                document.getElementById('orderForm').reset();
+            } else {
+                alert('Database communication failed. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

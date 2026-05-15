@@ -1,0 +1,25 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+datasource db {
+  provider = "mysql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Order {
+  id            Int      @id @default(autoincrement())
+  playerId      String
+  playerName    String
+  fullName      String
+  phone         String
+  packageUc     String   // e.g., "60 UC" or "1500 + 300 UC"
+  priceEtb      Int      // Price charged in ETB
+  paymentMethod String   // "CBE", "telebirr", or "ebirr"
+  status        String   @default("PENDING") // PENDING or COMPLETED
+  createdAt     DateTime @default(now())
+}
