@@ -1,25 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-require('dotenv').config();
+require('dotenv').config(); // Loads environment variables locally, gracefully ignored if missing on Render
 
-const { PrismaMariaDb } = require('@prisma/adapter-mariadb');
 const { PrismaClient } = require('@prisma/client');
 
-const adapter = new PrismaMariaDb({
-    host: '127.0.0.1',
-    user: 'root',
-    password: '',            
-    database: 'pubg_shop',   
-    connectionLimit: 5
-});
-
-const prisma = new PrismaClient({ adapter });
+// Initialize Prisma. It automatically pulls from process.env.DATABASE_URL
+const prisma = new PrismaClient(); 
 const app = express();
 
 // --- CONFIGURATION ---
-const ADMIN_PASSWORD = "2159"; // CHANGE THIS PASSWORD!
-const COOKIE_SECRET = "supersecrettokenkey"; 
+// Pulls from your Render settings dashboard, falls back to local credentials if testing at home
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "2159"; 
+const COOKIE_SECRET = process.env.COOKIE_SECRET || "supersecrettokenkey"; 
 
 app.use(cors());
 app.use(express.json());
@@ -44,7 +37,7 @@ app.post('/api/admin/login', (req, res) => {
     const { password } = req.body;
     if (password === ADMIN_PASSWORD) {
         // Set a secure cookie that expires in 1 day
-        res.cookie('admin_session', COOKIE_SECRET, { maxAge: 86400000, httpOnly: true });
+        res.cookie('admin_session', COOKIE_SECRET, { maxAge: 86400000, httpOnly: true, secure: process.env.NODE_ENV === 'production' });
         return res.json({ success: true });
     }
     res.status(401).json({ success: false, message: 'Incorrect Password' });
@@ -91,4 +84,4 @@ app.put('/api/orders/:id/complete', requireAuth, async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
