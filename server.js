@@ -6,7 +6,7 @@ require('dotenv').config(); // Loads environment variables locally, gracefully i
 const { PrismaClient } = require('@prisma/client');
 
 // Initialize Prisma. It automatically pulls from process.env.DATABASE_URL
-const prisma = new PrismaClient(); 
+const prisma = new PrismaClient({}); 
 const app = express();
 
 // --- CONFIGURATION ---
