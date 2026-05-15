@@ -18,7 +18,7 @@ const prisma = new PrismaClient({ adapter });
 const app = express();
 
 // --- CONFIGURATION ---
-const ADMIN_PASSWORD = "1212"; // CHANGE THIS PASSWORD!
+const ADMIN_PASSWORD = "2159"; // CHANGE THIS PASSWORD!
 const COOKIE_SECRET = "supersecrettokenkey"; 
 
 app.use(cors());
