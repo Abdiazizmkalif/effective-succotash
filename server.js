@@ -86,26 +86,27 @@ app.get('/api/lookup-player/:id', async (req, res) => {
     const playerId = req.params.id;
 
     try {
-        // Updated URL to specifically target the pubgm (PUBG Mobile) endpoint
-        const response = await fetch(`https://check-id-game.p.rapidapi.com/game/pubgm?id=${playerId}`, {
+        // Using the exact URL path shown in your RapidAPI documentation snippet
+        const response = await fetch(`https://check-id-game.p.rapidapi.com/api/rapid_api/cekpubgmobile/${playerId}`, {
             method: 'GET',
             headers: {
                 'X-RapidAPI-Key': '16d66caaebmsh0666b97970080efp14991ajsnb0ffd9a9b2ae', 
-                'X-RapidAPI-Host': 'check-id-game.p.rapidapi.com'
+                'X-RapidAPI-Host': 'check-id-game.p.rapidapi.com',
+                'Content-Type': 'application/json'
             }
         });
 
         const data = await response.json();
-        console.log("RapidAPI Response:", data); // Check your terminal to see the incoming object format!
+        console.log("RapidAPI Raw Response:", data); // Watch your Render logs window to see what this outputs!
 
-        // Read the character username returned by the gaming endpoint
+        // If the lookup is successful, return the player's username back to your modal view
         if (data && data.username) {
             return res.json({ success: true, nickname: data.username });
         } else {
             return res.json({ success: false, message: 'Character ID not found' });
         }
     } catch (error) {
-        console.error('RapidAPI system failure:', error);
+        console.error('RapidAPI connection system failure:', error);
         return res.status(500).json({ success: false, message: 'Verification lookup down' });
     }
 });
