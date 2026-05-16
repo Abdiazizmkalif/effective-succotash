@@ -1,21 +1,22 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-require('dotenv').config(); // Loads environment variables locally, gracefully ignored if missing on Render
+require('dotenv').config(); 
 
-// Initialize Prisma. It automatically pulls from process.env.DATABASE_URL
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = new PrismaClient(); 
+
+// THIS LINE MUST COME BEFORE APP.USE()
+const app = express(); 
 
 // --- CONFIGURATION ---
-// Pulls from your Render settings dashboard, falls back to local credentials if testing at home
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "2159"; 
 const COOKIE_SECRET = process.env.COOKIE_SECRET || "supersecrettokenkey"; 
 
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser(COOKIE_SECRET));
-app.use(express.static('public')); 
+app.use(express.static('public'));
 
 // 1. Submit a new order (Public - No password needed)
 app.post('/api/orders', async (req, res) => {
