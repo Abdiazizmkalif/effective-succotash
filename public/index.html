@@ -188,10 +188,11 @@
                     <p class="text-sm text-gray-400">Method: <span id="instructionMethod" class="text-white font-bold uppercase"></span></p>
                     <hr class="border-slate-800 my-2">
                     
-                    <p class="text-xs font-semibold text-amber-400">Our Payment Accounts:</p>
-                    <p class="text-sm text-slate-300">📱 <span class="font-bold text-white">Telebirr / E-Birr:</span> 0912345678 (Abdiasis Mohamed)</p>
-                    <p class="text-sm text-slate-300">🏦 <span class="font-bold text-white">CBE Account:</span> 1000123456789 (Abdiasis Mohamed)</p>
-                    <p class="text-sm text-slate-300">📞 <span class="font-bold text-white">Golis (Sahal/Waafi):</span> YOUR_NUMBER_HERE (YOUR_NAME_HERE)</p>
+                    <p class="text-xs font-semibold text-amber-400">Our Payment Account:</p>
+                    <p id="account-telebirr" class="text-sm text-slate-300 hidden">📱 <span class="font-bold text-white">Telebirr:</span> 0912345678 (Abdiasis Mohamed)</p>
+                    <p id="account-ebirr" class="text-sm text-slate-300 hidden">📱 <span class="font-bold text-white">E-Birr:</span> 0912345678 (Abdiasis Mohamed)</p>
+                    <p id="account-cbe" class="text-sm text-slate-300 hidden">🏦 <span class="font-bold text-white">CBE Account:</span> 1000123456789 (Abdiasis Mohamed)</p>
+                    <p id="account-golis" class="text-sm text-slate-300 hidden">📞 <span class="font-bold text-white">Golis (Sahal/Waafi):</span> YOUR_NUMBER_HERE (YOUR_NAME_HERE)</p>
                 </div>
                 
                 <p class="text-xs text-amber-500 bg-amber-500/10 p-2 rounded">Your package will be manually added to your account within 15-30 minutes after validation.</p>
@@ -256,6 +257,18 @@
                 document.getElementById('instructionPrice').innerText = selectedPrice.toLocaleString();
                 document.getElementById('instructionMethod').innerText = selectedMethod;
                 
+                // Hide all accounts first to clear previous states
+                document.getElementById('account-telebirr').classList.add('hidden');
+                document.getElementById('account-ebirr').classList.add('hidden');
+                document.getElementById('account-cbe').classList.add('hidden');
+                document.getElementById('account-golis').classList.add('hidden');
+
+                // Reveal only the chosen account row (matching select options: 'telebirr', 'ebirr', 'CBE', 'golis')
+                if (selectedMethod === 'telebirr') document.getElementById('account-telebirr').classList.remove('hidden');
+                if (selectedMethod === 'ebirr') document.getElementById('account-ebirr').classList.remove('hidden');
+                if (selectedMethod === 'CBE') document.getElementById('account-cbe').classList.remove('hidden');
+                if (selectedMethod === 'golis') document.getElementById('account-golis').classList.remove('hidden');
+
                 // Toggle pop-up card view over to step 2 instructions
                 document.getElementById('modalStepForm').classList.add('hidden');
                 document.getElementById('modalStepInstructions').classList.remove('hidden');
