@@ -3,8 +3,6 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 require('dotenv').config(); // Loads environment variables locally, gracefully ignored if missing on Render
 
-const { PrismaClient } = require('@prisma/client');
-
 // Initialize Prisma. It automatically pulls from process.env.DATABASE_URL
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
