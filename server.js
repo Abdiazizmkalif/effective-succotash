@@ -82,5 +82,33 @@ app.put('/api/orders/:id/complete', requireAuth, async (req, res) => {
     }
 });
 
+app.get('/api/lookup-player/:id', async (req, res) => {
+    const playerId = req.params.id;
+
+    try {
+        // Updated URL to specifically target the pubgm (PUBG Mobile) endpoint
+        const response = await fetch(`https://check-id-game.p.rapidapi.com/game/pubgm?id=${playerId}`, {
+            method: 'GET',
+            headers: {
+                'X-RapidAPI-Key': '16d66caaebmsh0666b97970080efp14991ajsnb0ffd9a9b2ae', 
+                'X-RapidAPI-Host': 'check-id-game.p.rapidapi.com'
+            }
+        });
+
+        const data = await response.json();
+        console.log("RapidAPI Response:", data); // Check your terminal to see the incoming object format!
+
+        // Read the character username returned by the gaming endpoint
+        if (data && data.username) {
+            return res.json({ success: true, nickname: data.username });
+        } else {
+            return res.json({ success: false, message: 'Character ID not found' });
+        }
+    } catch (error) {
+        console.error('RapidAPI system failure:', error);
+        return res.status(500).json({ success: false, message: 'Verification lookup down' });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
