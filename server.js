@@ -86,7 +86,6 @@ app.get('/api/lookup-player/:id', async (req, res) => {
     const playerId = req.params.id;
 
     try {
-        // Using the exact URL path shown in your RapidAPI documentation snippet
         const response = await fetch(`https://check-id-game.p.rapidapi.com/api/rapid_api/cekpubgmobile/${playerId}`, {
             method: 'GET',
             headers: {
@@ -97,11 +96,11 @@ app.get('/api/lookup-player/:id', async (req, res) => {
         });
 
         const data = await response.json();
-        console.log("RapidAPI Raw Response:", data); // Watch your Render logs window to see what this outputs!
+        console.log("RapidAPI Raw Response:", data);
 
-        // If the lookup is successful, return the player's username back to your modal view
-        if (data && data.username) {
-            return res.json({ success: true, nickname: data.username });
+        // Notice the change here: checking if data.success is true and accessing data.data.username
+        if (data && data.success && data.data && data.data.username) {
+            return res.json({ success: true, nickname: data.data.username });
         } else {
             return res.json({ success: false, message: 'Character ID not found' });
         }
