@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 const app = express(); 
 
 // --- CONFIGURATION ---
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "2159"; 
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "super-secret-random-local-string-99X!";
 const COOKIE_SECRET = process.env.COOKIE_SECRET || "supersecrettokenkey"; 
 
 app.use(cors());
