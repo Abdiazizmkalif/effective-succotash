@@ -129,11 +129,16 @@
                 <form id="orderForm" class="space-y-4">
                     <div>
                         <label class="block text-sm text-gray-400 mb-1">Player ID</label>
-                        <input type="text" id="playerId" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded text-white focus:outline-none focus:border-amber-500">
+                        <div class="flex space-x-2">
+                            <input type="text" id="playerId" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded text-white focus:outline-none focus:border-amber-500">
+                            <button type="button" onclick="verifyPlayer()" id="verifyBtn" class="bg-amber-500 text-slate-900 px-4 font-bold rounded hover:bg-amber-400 transition text-sm">
+                                Verify
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm text-gray-400 mb-1">In-game Player Name</label>
-                        <input type="text" id="playerName" required class="w-full p-2 bg-slate-900 border border-slate-700 rounded text-white focus:outline-none focus:border-amber-500">
+                        <input type="text" id="playerName" required readonly placeholder="Click Verify above..." class="w-full p-2 bg-slate-950 border border-slate-800 rounded text-emerald-400 font-semibold focus:outline-none cursor-not-allowed">
                     </div>
                     <div>
                         <label class="block text-sm text-gray-400 mb-1">Your Full Name</label>
@@ -259,6 +264,42 @@
                 alert('Database communication failed. Please try again.');
             }
         });
+
+        async function verifyPlayer() {
+            const idInput = document.getElementById('playerId').value.trim();
+            const nameInput = document.getElementById('playerName');
+            const verifyBtn = document.getElementById('verifyBtn');
+
+            if (!idInput) {
+                alert('Please enter a Player ID first!');
+                return;
+            }
+
+            // Visual loading state
+            verifyBtn.innerText = 'Checking...';
+            verifyBtn.disabled = true;
+            nameInput.value = '';
+
+            try {
+                const response = await fetch(`/api/lookup-player/${idInput}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    // Fill name input with the true in-game name and highlight it emerald
+                    nameInput.value = result.nickname;
+                    verifyBtn.innerText = 'Verified!';
+                    verifyBtn.className = "bg-emerald-600 text-white px-4 font-bold rounded text-sm cursor-not-allowed";
+                } else {
+                    alert('Invalid Player ID! Please check the numbers.');
+                    verifyBtn.innerText = 'Verify';
+                    verifyBtn.disabled = false;
+                }
+            } catch (error) {
+                alert('Error connecting to verification system.');
+                verifyBtn.innerText = 'Verify';
+                verifyBtn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>
