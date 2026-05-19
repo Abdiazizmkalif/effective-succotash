@@ -146,7 +146,7 @@ async function sendTelegramAlert(orderData) {
     const BOT_TOKEN = '8343338910:AAGqJHGN_W671Ed13t5q4HB7Fbgp-rSBdjQ';
     const CHAT_ID = '7481472740'; 
     // Change this URL to match your real live website link
-    const DASHBOARD_URL = 'https://pubg-uc-shop.onrender.com/admin'; // Update with your actual URL path!
+    const DASHBOARD_URL = 'https://pubg-uc-shop.onrender.com/admin.html'; // Update with your actual URL path!
 
     const message = `🎮 *New UC Order Received!*\n\n` +
                     `🆔 *Player ID:* \`${orderData.playerId}\`\n` +
@@ -155,7 +155,7 @@ async function sendTelegramAlert(orderData) {
                     `💰 *Price:* ${orderData.price} ETB\n` +
                     `📝 *Method:* ${orderData.transactionRef}\n\n` +
                     `🔗 *[Click Here to Open Admin Dashboard](${DASHBOARD_URL})*`;
-                    
+
     try {
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
