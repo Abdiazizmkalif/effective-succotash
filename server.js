@@ -145,15 +145,17 @@ async function sendTelegramAlert(orderData) {
     // Paste your real keys here
     const BOT_TOKEN = '8343338910:AAGqJHGN_W671Ed13t5q4HB7Fbgp-rSBdjQ';
     const CHAT_ID = '7481472740'; 
-    
+    // Change this URL to match your real live website link
+    const DASHBOARD_URL = 'https://pubg-uc-shop.onrender.com/admin'; // Update with your actual URL path!
+
     const message = `🎮 *New UC Order Received!*\n\n` +
                     `🆔 *Player ID:* \`${orderData.playerId}\`\n` +
                     `👤 *In-Game Name:* ${orderData.nickname}\n` +
                     `📦 *Package:* ${orderData.packageType}\n` +
                     `💰 *Price:* ${orderData.price} ETB\n` +
-                    `📝 *Reference No:* \`${orderData.transactionRef}\`\n\n` +
-                    `⚡ _Open your dashboard to confirm payment!_`;
-
+                    `📝 *Method:* ${orderData.transactionRef}\n\n` +
+                    `🔗 *[Click Here to Open Admin Dashboard](${DASHBOARD_URL})*`;
+                    
     try {
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
