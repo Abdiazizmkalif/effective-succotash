@@ -26,6 +26,24 @@ app.post('/api/orders', async (req, res) => {
             data: { playerId, playerName, fullName, phone, packageUc, priceEtb, paymentMethod }
         });
         res.status(201).json({ success: true, order: newOrder });
+        // ... INSIDE YOUR ORDER CREATION ROUTE ...
+        const newOrder = await prisma.order.create({
+            data: {
+                playerId: req.body.playerId,
+                nickname: req.body.nickname,
+                packageType: req.body.packageType,
+                price: req.body.price,
+                transactionRef: req.body.transactionRef,
+                status: 'PENDING'
+            }
+        });
+
+        // Run the notification background function instantly!
+        sendTelegramAlert(newOrder); 
+
+        // Send success back to the customer's browser screen
+        return res.json({ success: true, message: 'Order submitted for verification!' });
+        
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
@@ -109,6 +127,36 @@ app.get('/api/lookup-player/:id', async (req, res) => {
         return res.status(500).json({ success: false, message: 'Verification lookup down' });
     }
 });
+
+// Send a clean, formatted alert straight to your Telegram app
+async function sendTelegramAlert(orderData) {
+    // Paste your real keys here
+    const BOT_TOKEN = '8343338910:AAGqJHGN_W671Ed13t5q4HB7Fbgp-rSBdjQ';
+    const CHAT_ID = '7481472740'; 
+    
+    const message = `🎮 *New UC Order Received!*\n\n` +
+                    `🆔 *Player ID:* \`${orderData.playerId}\`\n` +
+                    `👤 *In-Game Name:* ${orderData.nickname}\n` +
+                    `📦 *Package:* ${orderData.packageType}\n` +
+                    `💰 *Price:* ${orderData.price} ETB\n` +
+                    `📝 *Reference No:* \`${orderData.transactionRef}\`\n\n` +
+                    `⚡ _Open your dashboard to confirm payment!_`;
+
+    try {
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        });
+        console.log("Telegram notification sent successfully!");
+    } catch (err) {
+        console.error("Failed sending message via Telegram API:", err);
+    }
+}
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
