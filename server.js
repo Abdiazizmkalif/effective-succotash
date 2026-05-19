@@ -26,6 +26,7 @@ app.post('/api/orders', async (req, res) => {
             data: { playerId, playerName, fullName, phone, packageUc, priceEtb, paymentMethod }
         });
         res.status(201).json({ success: true, order: newOrder });
+
         // ... INSIDE YOUR ORDER CREATION ROUTE ...
         const newOrder = await prisma.order.create({
             data: {
@@ -43,7 +44,7 @@ app.post('/api/orders', async (req, res) => {
 
         // Send success back to the customer's browser screen
         return res.json({ success: true, message: 'Order submitted for verification!' });
-        
+
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
