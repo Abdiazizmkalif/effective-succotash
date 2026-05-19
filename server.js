@@ -21,32 +21,43 @@ app.use(express.static('public'));
 // 1. Submit a new order (Public - No password needed)
 app.post('/api/orders', async (req, res) => {
     try {
+        // 1. Grab all incoming data from the request body
         const { playerId, playerName, fullName, phone, packageUc, priceEtb, paymentMethod } = req.body;
-        const newOrder = await prisma.order.create({
-            data: { playerId, playerName, fullName, phone, packageUc, priceEtb, paymentMethod }
-        });
-        res.status(201).json({ success: true, order: newOrder });
 
-        // ... INSIDE YOUR ORDER CREATION ROUTE ...
+        // 2. Save it to your Prisma database ONCE using your real field names
         const newOrder = await prisma.order.create({
-            data: {
-                playerId: req.body.playerId,
-                nickname: req.body.nickname,
-                packageType: req.body.packageType,
-                price: req.body.price,
-                transactionRef: req.body.transactionRef,
-                status: 'PENDING'
+            data: { 
+                playerId, 
+                playerName, 
+                fullName, 
+                phone, 
+                packageUc, 
+                priceEtb, 
+                paymentMethod,
+                status: 'PENDING' // Assuming you have a default or status field
             }
         });
 
-        // Run the notification background function instantly!
-        sendTelegramAlert(newOrder); 
+        // 3. Trigger your Telegram bot alert using your saved order data
+        // We pass the data in an object format that your telegram function expects
+        sendTelegramAlert({
+            playerId: newOrder.playerId,
+            nickname: newOrder.playerName, // maps playerName to the telegram nickname field
+            packageType: newOrder.packageUc, // maps packageUc to packageType
+            price: newOrder.priceEtb,
+            transactionRef: newOrder.paymentMethod // or whatever field tracks their reference code
+        }); 
 
-        // Send success back to the customer's browser screen
-        return res.json({ success: true, message: 'Order submitted for verification!' });
+        // 4. Send ONE final success response back to the browser screen
+        return res.status(201).json({ 
+            success: true, 
+            message: 'Order submitted for verification!',
+            order: newOrder 
+        });
 
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        console.error("Order submission route crashed:", error);
+        return res.status(500).json({ success: false, error: error.message });
     }
 });
 
