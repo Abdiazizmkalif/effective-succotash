@@ -100,29 +100,42 @@ app.get('/api/orders', requireAuth, async (req, res) => {
 
 // 5. Mark order as completed (PROTECTED)
 app.put('/api/orders/:id/complete', async (req, res) => {
-    const { id } = req.params;
+    // Convert the text parameter id (like "34") into a real integer number (34)
+    const id = Number(req.params.id);
+
+    // Safety check: if conversion fails, stop immediately
+    if (isNaN(id)) {
+        return res.status(400).json({ success: false, error: 'Invalid order ID format.' });
+    }
 
     try {
-        // 1. Update the current active order to COMPLETED state
+        // 1. Update the current active order to COMPLETED state using the numeric ID
         const updatedOrder = await prisma.order.update({
-            where: { id: id },
+            where: { id: id }, // Prisma will be perfectly happy now!
             data: { status: 'COMPLETED' }
         });
 
         // 2. Perform background tracking calculations if a referral code exists
         if (updatedOrder.referredBy) {
-            // Count completed transactions credited to this specific referrer
-            const successfulReferralsCount = await prisma.order.count({
-                where: {
-                    referredBy: updatedOrder.referredBy,
-                    status: 'COMPLETED'
-                }
-            });
+            try {
+                // Count completed transactions credited to this specific referrer
+                const successfulReferralsCount = await prisma.order.count({
+                    where: {
+                        referredBy: updatedOrder.referredBy,
+                        status: 'COMPLETED'
+                    }
+                });
 
-            // Trigger Milestone Alert if their referrals hit a multiple of 5 (5, 10, 15...)
-            if (successfulReferralsCount > 0 && successfulReferralsCount % 5 === 0) {
-                // Call your telegram worker function from here safely!
-                sendTelegramRewardAlert(updatedOrder.referredBy, successfulReferralsCount);
+                // Trigger Milestone Alert if their referrals hit a multiple of 5
+                if (successfulReferralsCount > 0 && successfulReferralsCount % 5 === 0) {
+                    if (typeof sendTelegramRewardAlert === 'function') {
+                        await sendTelegramRewardAlert(updatedOrder.referredBy, successfulReferralsCount);
+                    } else {
+                        console.warn("Warning: sendTelegramRewardAlert function is missing in server.js");
+                    }
+                }
+            } catch (referralError) {
+                console.error("Referral tracking calculation background step failed:", referralError);
             }
         }
 
@@ -130,7 +143,7 @@ app.put('/api/orders/:id/complete', async (req, res) => {
 
     } catch (error) {
         console.error("Dashboard complete route failed:", error);
-        return res.status(500).json({ success: false, error: 'Database communication failed.' });
+        return res.status(500).json({ success: false, error: error.message });
     }
 });
 
