@@ -198,15 +198,15 @@
 
         // Centralized inventory control array
         const ucPackages = [
-            { name: '30 UC', price: 125, badge: 'Popular', image: '/ucPack1.png' },
-            { name: '60 UC', price: 200, badge: 'Best Seller', image: '/ucPack1.png' },
-            { name: '90 UC', price: 280, badge: 'Value Pack', image: '/ucPack1.png' },
-            { name: '120 UC', price: 360, badge: 'Value Pack', image: '/ucPack2.png' },
-            { name: '150 UC', price: 440, badge: 'Value Pack', image: '/ucPack2.png' },
-            { name: '180 UC', price: 520, badge: 'Value Pack', image: '/ucPack2.png' },
-            { name: '210 UC', price: 610, badge: 'Value Pack', image: '/ucPack3.png' },
-            { name: '240 UC', price: 690, badge: 'Value Pack', image: '/ucPack3.png' },
-            { name: '270 UC', price: 770, badge: 'Value Pack', image: '/ucPack3.png' },
+            { name: '30 UC', price: 120, badge: 'Popular', image: '/ucPack1.png' },
+            { name: '60 UC', price: 210, badge: 'Best Seller', image: '/ucPack1.png' },
+            { name: '90 UC', price: 295, badge: 'Value Pack', image: '/ucPack1.png' },
+            { name: '120 UC', price: 370, badge: 'Value Pack', image: '/ucPack2.png' },
+            { name: '150 UC', price: 450, badge: 'Value Pack', image: '/ucPack2.png' },
+            { name: '180 UC', price: 530, badge: 'Value Pack', image: '/ucPack2.png' },
+            { name: '210 UC', price: 620, badge: 'Value Pack', image: '/ucPack3.png' },
+            { name: '240 UC', price: 695, badge: 'Value Pack', image: '/ucPack3.png' },
+            { name: '270 UC', price: 780, badge: 'Value Pack', image: '/ucPack3.png' },
             { name: '325 UC', price: 850, badge: 'Royale Pass Elite', image: '/ucPack4.png' },
             { name: '355 UC', price: 950, badge: 'Bonus Deal', image: '/ucPack4.png' },
             { name: '385 UC', price: 1050, badge: 'Bonus Deal', image: '/ucPack4.png' },
@@ -244,6 +244,18 @@
         // Fire the render loop when the web content loads up!
         document.addEventListener('DOMContentLoaded', renderUCPackages);
 
+        function generateShareLinks(playerInGameName, playerId) {
+            const shopUrl = `https://yourshop.onrender.com/?ref=${playerId}`;
+            const textMessage = `🔥 Hey! Get your PUBG UC instantly on this trusted store. Use my link to get a special discount on your first package: ${shopUrl}`;
+            
+            // Web URL encodings for safe link sharing
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textMessage)}`;
+            const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shopUrl)}&text=${encodeURIComponent(textMessage)}`;
+            
+            // Set these URLs to your button href attributes
+            document.getElementById('share-whatsapp').href = whatsappUrl;
+            document.getElementById('share-telegram').href = telegramUrl;
+        }
     </script>
 </body>
 </html>

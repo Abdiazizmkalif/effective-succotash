@@ -12,15 +12,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//model Order {
+//  id            Int      @id @default(autoincrement())
+//  playerId      String
+//  playerName    String
+//  fullName      String
+//  phone         String
+//  packageUc     String   // e.g., "60 UC" or "1500 + 300 UC"
+//  priceEtb      Int      // Price charged in ETB
+//  paymentMethod String   // "CBE", "telebirr", or "ebirr"
+//  status        String   @default("PENDING") // PENDING or COMPLETED
+//  createdAt     DateTime @default(now())
+//}
 model Order {
-  id            Int      @id @default(autoincrement())
-  playerId      String
-  playerName    String
-  fullName      String
-  phone         String
-  packageUc     String   // e.g., "60 UC" or "1500 + 300 UC"
-  priceEtb      Int      // Price charged in ETB
-  paymentMethod String   // "CBE", "telebirr", or "ebirr"
-  status        String   @default("PENDING") // PENDING or COMPLETED
-  createdAt     DateTime @default(now())
+  id             String   @id @default(uuid())
+  playerId       String   
+  playerName     String   // The in-game name
+  fullName       String
+  phone          String
+  packageUc      String   
+  priceEtb       Float
+  paymentMethod  String
+  status         String   @default("PENDING")
+  referredBy     String?  // Holds the Player ID of the person who shared the link!
+  createdAt      DateTime @default(now())
 }
