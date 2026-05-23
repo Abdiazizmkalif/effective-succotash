@@ -69,26 +69,18 @@
         }
 
         async function completeOrder(id) {
-            if(confirm('Are you sure you loaded the UC onto Midasbuy for this ID?')) {
+            if (confirm('Are you sure you loaded the UC onto Midasbuy for this ID?')) {
                 const res = await fetch(`/api/orders/${id}/complete`, { method: 'PUT' });
-                if (res.status === 403) { window.location.href = '/login.html'; return; }
-                fetchOrders();
-
-                // Inside your Admin Confirmation route after marking an order as COMPLETED:
-                if (order.referredBy) {
-                    // Count how many completed orders this referrer has brought in total
-                    const successfulReferralsCount = await prisma.order.count({
-                        where: {
-                            referredBy: order.referredBy,
-                            status: 'COMPLETED'
-                        }
-                    });
-
-                    // Check if they just hit a multiple of 5!
-                    if (successfulReferralsCount % 5 === 0) {
-                        // Send a specialized Telegram alert so you know to reward them!
-                        sendTelegramRewardAlert(order.referredBy, successfulReferralsCount);
-                    }
+                
+                if (res.status === 403) { 
+                    window.location.href = '/login.html'; 
+                    return; 
+                }
+                
+                if (res.ok) {
+                    fetchOrders(); // Simply refresh the table view if the database update succeeded
+                } else {
+                    alert('Error updating order on backend.');
                 }
             }
         }

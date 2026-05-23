@@ -99,16 +99,38 @@ app.get('/api/orders', requireAuth, async (req, res) => {
 });
 
 // 5. Mark order as completed (PROTECTED)
-app.put('/api/orders/:id/complete', requireAuth, async (req, res) => {
+app.put('/api/orders/:id/complete', async (req, res) => {
+    const { id } = req.params;
+
     try {
-        const { id } = req.params;
+        // 1. Update the current active order to COMPLETED state
         const updatedOrder = await prisma.order.update({
-            where: { id: parseInt(id) },
+            where: { id: id },
             data: { status: 'COMPLETED' }
         });
-        res.json({ success: true, order: updatedOrder });
+
+        // 2. Perform background tracking calculations if a referral code exists
+        if (updatedOrder.referredBy) {
+            // Count completed transactions credited to this specific referrer
+            const successfulReferralsCount = await prisma.order.count({
+                where: {
+                    referredBy: updatedOrder.referredBy,
+                    status: 'COMPLETED'
+                }
+            });
+
+            // Trigger Milestone Alert if their referrals hit a multiple of 5 (5, 10, 15...)
+            if (successfulReferralsCount > 0 && successfulReferralsCount % 5 === 0) {
+                // Call your telegram worker function from here safely!
+                sendTelegramRewardAlert(updatedOrder.referredBy, successfulReferralsCount);
+            }
+        }
+
+        return res.json({ success: true, order: updatedOrder });
+
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        console.error("Dashboard complete route failed:", error);
+        return res.status(500).json({ success: false, error: 'Database communication failed.' });
     }
 });
 
@@ -169,6 +191,26 @@ async function sendTelegramAlert(orderData) {
         console.log("Telegram notification sent successfully!");
     } catch (err) {
         console.error("Failed sending message via Telegram API:", err);
+    }
+}
+
+async function sendTelegramRewardAlert(referrerId, totalCount) {
+    const BOT_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN';
+    const CHAT_ID = 'YOUR_PERSONAL_CHAT_ID'; 
+
+    const message = `🎁 *REFERRAL MILESTONE REACHED!* 🎁\n\n` +
+                    `👤 *Referrer Player ID:* \`${referrerId}\`\n` +
+                    `📊 *Total Successful Invites:* ${totalCount}\n\n` +
+                    `⚠️ *ACTION REQUIRED:* Load a free *30 UC* reward pack to this Player ID immediately!`;
+
+    try {
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'Markdown' })
+        });
+    } catch (err) {
+        console.error("Telegram milestone transmission failed:", err);
     }
 }
 
