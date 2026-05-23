@@ -25,7 +25,7 @@ datasource db {
 //  createdAt     DateTime @default(now())
 //}
 model Order {
-  id             String   @id @default(uuid())
+  id             Int      @id @default(autoincrement())
   playerId       String   
   playerName     String   // The in-game name
   fullName       String
