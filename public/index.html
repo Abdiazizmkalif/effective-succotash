@@ -267,24 +267,17 @@
         // Fire the render loop when the web content loads up!
         document.addEventListener('DOMContentLoaded', renderUCPackages);
 
-        function generateShareLinks(playerId) {
-            // Dynamically uses whatever URL domain the site is currently loaded on!
-            const currentDomain = window.location.origin; 
-            const shopUrl = `${currentDomain}/?ref=${playerId}`;
+        function generateShareLinks(playerInGameName, playerId) {
+            const shopUrl = `https://yourshop.onrender.com/?ref=${playerId}`;
+            const textMessage = `🔥 Hey! Get your PUBG UC instantly on this trusted store. Use my link: ${shopUrl}`;
             
-            const textMessage = `🔥 Hey! Get your PUBG UC instantly on this trusted store. Use my link to get a fast delivery package: ${shopUrl}`;
-            
+            // Web URL encodings for safe link sharing
             const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textMessage)}`;
             const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shopUrl)}&text=${encodeURIComponent(textMessage)}`;
             
-            // Safety check: ensure buttons exist on screen before updating them
-            const whatsappBtn = document.getElementById('share-whatsapp');
-            const telegramBtn = document.getElementById('share-telegram');
-            
-            if (whatsappBtn && telegramBtn) {
-                whatsappBtn.href = whatsappUrl;
-                telegramBtn.href = telegramUrl;
-            }
+            // Set these URLs to your button href attributes
+            document.getElementById('share-whatsapp').href = whatsappUrl;
+            document.getElementById('share-telegram').href = telegramUrl;
         }
     </script>
 </body>
