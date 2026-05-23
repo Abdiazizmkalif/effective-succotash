@@ -49,7 +49,8 @@
                             <option value="ebirr">E-Birr</option>
                             <option value="telebirr">Telebirr</option>
                             <option value="CBE">Commercial Bank of Ethiopia (CBE)</option>
-                            <option value="golis">Golis (Sahal / Waafi)</option> </select>
+                            <option value="golis">Golis (Sahal / Waafi)</option> 
+                        </select>
                     </div>
 
                     <div class="flex space-x-3 mt-6">
@@ -77,6 +78,20 @@
                 </div>
                 
                 <p class="text-xs text-amber-500 bg-amber-500/10 p-2 rounded">Your package will be manually added to your account within 15-30 minutes after validation.</p>
+
+                <div class="bg-slate-900 p-4 rounded-xl border border-amber-500/30 text-center space-y-3">
+                    <p class="text-xs font-bold text-amber-400 uppercase tracking-wider">🎁 Free UC Promotion 🎁</p>
+                    <p class="text-xs text-gray-300">Want free UC? Invite 5 friends using your personal link below. Once they make their first purchase, you'll instantly claim 30 UC free!</p>
+                    
+                    <div class="flex flex-col gap-2 pt-1">
+                        <a id="share-whatsapp" target="_blank" class="w-full bg-emerald-600 py-2 rounded-lg font-bold text-xs text-white hover:bg-emerald-500 transition flex items-center justify-center gap-2 cursor-pointer">
+                            💬 Share via WhatsApp
+                        </a>
+                        <a id="share-telegram" target="_blank" class="w-full bg-sky-600 py-2 rounded-lg font-bold text-xs text-white hover:bg-sky-500 transition flex items-center justify-center gap-2 cursor-pointer">
+                            ✈️ Share via Telegram
+                        </a>
+                    </div>
+                </div>
                 
                 <button onclick="closeModal()" class="w-full bg-slate-700 py-2.5 rounded-lg font-bold hover:bg-slate-600 transition mt-2">
                     Done, Back to Store
@@ -89,7 +104,7 @@
     <footer class="mt-20 p-6 border-t border-slate-800 text-center text-xs text-gray-600 w-full">
         <p>© 2026 ET PUBG UC Shop. All rights reserved.</p>
         <a href="/admin.html" class="hover:text-slate-500 transition mt-2 inline-block">Staff Login</a>
-    </footer>
+    </footer >
 
     <script>
         let selectedPackage = '';
@@ -99,7 +114,13 @@
             selectedPackage = pack;
             selectedPrice = price;
             
-            // Reset modal states back to default step
+            // Reset verification button to default state when reopening modal
+            const verifyBtn = document.getElementById('verifyBtn');
+            verifyBtn.innerText = 'Verify';
+            verifyBtn.disabled = false;
+            verifyBtn.className = "bg-amber-500 text-slate-900 px-4 font-bold rounded hover:bg-amber-400 transition text-sm";
+            
+            // Ensure form step is visible and instructions are hidden on click
             document.getElementById('modalStepForm').classList.remove('hidden');
             document.getElementById('modalStepInstructions').classList.add('hidden');
             
@@ -115,8 +136,10 @@
             e.preventDefault();
             
             const selectedMethod = document.getElementById('paymentMethod').value;
+            const currentId = document.getElementById('playerId').value.trim();
+            
             const orderData = {
-                playerId: document.getElementById('playerId').value,
+                playerId: currentId,
                 playerName: document.getElementById('playerName').value,
                 fullName: document.getElementById('fullName').value,
                 phone: document.getElementById('phone').value,
@@ -150,7 +173,10 @@
                 if (selectedMethod === 'CBE') document.getElementById('account-cbe').classList.remove('hidden');
                 if (selectedMethod === 'golis') document.getElementById('account-golis').classList.remove('hidden');
 
-                // Toggle pop-up card view over to step 2 instructions
+                // Generate and mount the sharing URLs to the buttons dynamically using the active customer's Player ID
+                generateShareLinks(currentId);
+
+                // Toggle views securely: hide form fields, show success information layout 
                 document.getElementById('modalStepForm').classList.add('hidden');
                 document.getElementById('modalStepInstructions').classList.remove('hidden');
                 
@@ -244,17 +270,24 @@
         // Fire the render loop when the web content loads up!
         document.addEventListener('DOMContentLoaded', renderUCPackages);
 
-        function generateShareLinks(playerInGameName, playerId) {
-            const shopUrl = `https://yourshop.onrender.com/?ref=${playerId}`;
-            const textMessage = `🔥 Hey! Get your PUBG UC instantly on this trusted store. Use my link: ${shopUrl}`;
+        function generateShareLinks(playerId) {
+            // Dynamically scales to production domain (e.g., https://pubg-uc-shop.onrender.com)
+            const currentDomain = window.location.origin; 
+            const shopUrl = `${currentDomain}/?ref=${playerId}`;
             
-            // Web URL encodings for safe link sharing
+            const textMessage = `🔥 Hey! Get your PUBG UC instantly on this trusted store. Use my link to buy directly: ${shopUrl}`;
+            
             const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textMessage)}`;
             const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shopUrl)}&text=${encodeURIComponent(textMessage)}`;
             
-            // Set these URLs to your button href attributes
-            document.getElementById('share-whatsapp').href = whatsappUrl;
-            document.getElementById('share-telegram').href = telegramUrl;
+            // Safely verify existence before execution injection
+            const whatsappBtn = document.getElementById('share-whatsapp');
+            const telegramBtn = document.getElementById('share-telegram');
+            
+            if (whatsappBtn && telegramBtn) {
+                whatsappBtn.href = whatsappUrl;
+                telegramBtn.href = telegramUrl;
+            }
         }
     </script>
 </body>
