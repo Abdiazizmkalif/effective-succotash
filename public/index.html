@@ -13,6 +13,21 @@
         <p class="text-sm text-gray-400 mt-1">Fast & Reliable Local Payment</p>
     </header>
 
+    <div id="eid-banner" class="max-w-6xl mx-auto mt-4 mx-4 p-4 bg-gradient-to-r from-amber-600 to-emerald-700 rounded-xl border border-amber-500/40 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-center md:text-left">
+            <h2 class="text-xl font-bold text-white flex items-center justify-center md:justify-start gap-2">
+                🌙 Eid Mubarak Flash Sale!
+            </h2>
+            <p class="text-xs text-amber-100 mt-0.5">All shop profit margins dropped to 0%! Get your UC at absolute raw baseline cost.</p>
+        </div>
+        <div class="bg-slate-950/60 px-4 py-2 rounded-lg border border-white/10 text-center min-w-[220px]">
+            <p class="text-[10px] uppercase font-bold tracking-wider text-amber-400">Offer Ends In:</p>
+            <div id="countdown-timer" class="text-lg font-mono font-bold text-white tracking-wide mt-0.5">
+                00d : 00h : 00m : 00s
+            </div>
+        </div>
+    </div>
+
     <main id="uc-packs-container" class="max-w-6xl mx-auto p-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
     </main>
 
@@ -63,7 +78,7 @@
             <div id="modalStepInstructions" class="hidden text-center space-y-4">
                 <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">✓</div>
                 <h2 class="text-xl font-bold text-emerald-400">Dalabkaaga waa la diiwaangaliyay!</h2>
-                <p class="text-sm text-gray-300">Fadlan lacagta ku dir lambarkan hoose si UC ga laguugu fasaxo</p>
+                <p class="text-sm text-gray-300">Si aad u dhammaystirto iibsashadaada, fadlan si degdeg ah u wareeji (transfer) lacagtan soo socota:</p>
                 
                 <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-2 text-left">
                     <p class="text-sm text-gray-400">Amount: <span id="instructionPrice" class="text-white font-bold text-base"></span> Birr</p>
@@ -104,23 +119,115 @@
     <footer class="mt-20 p-6 border-t border-slate-800 text-center text-xs text-gray-600 w-full">
         <p>© 2026 ET PUBG UC Shop. All rights reserved.</p>
         <a href="/admin.html" class="hover:text-slate-500 transition mt-2 inline-block">Staff Login</a>
-    </footer >
+    </footer>
 
     <script>
         let selectedPackage = '';
         let selectedPrice = 0;
+        let isEidActive = true; 
+
+        // Set the precise point in time when the 3-day Eid promotion expires
+        // Change this date string to target your precise holiday target window!
+        const targetEidEnd = new Date();
+        targetEidEnd.setDate(targetEidEnd.getDate() + 3); // Run precisely for 3 days from initialization
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetEidEnd.getTime() - now;
+
+            if (distance < 0) {
+                isEidActive = false;
+                document.getElementById('eid-banner').classList.add('hidden');
+                document.getElementById('countdown-timer').innerText = "EXPIRED";
+                renderUCPackages(); // Rerender items to showcase standard rates again
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Padding single digits with zero for elegant layout symmetry
+            const d = days < 10 ? '0' + days : days;
+            const h = hours < 10 ? '0' + hours : hours;
+            const m = minutes < 10 ? '0' + minutes : minutes;
+            const s = seconds < 10 ? '0' + seconds : seconds;
+
+            document.getElementById('countdown-timer').innerText = `${d}d : ${h}h : ${m}m : ${s}s`;
+        }
+        setInterval(updateCountdown, 1000);
+
+        // Centralized inventory control array with base pricing and holiday prices mapped directly
+        const ucPackages = [
+            { name: '30 UC', standardPrice: 120, eidPrice: 88, badge: 'Popular', image: '/ucPack1.png' },
+            { name: '60 UC', standardPrice: 210, eidPrice: 173, badge: 'Best Seller', image: '/ucPack1.png' },
+            { name: '90 UC', standardPrice: 295, eidPrice: 221, badge: 'Value Pack', image: '/ucPack1.png' },
+            { name: '120 UC', standardPrice: 370, eidPrice: 277, badge: 'Value Pack', image: '/ucPack2.png' },
+            { name: '150 UC', standardPrice: 450, eidPrice: 337, badge: 'Value Pack', image: '/ucPack2.png' },
+            { name: '180 UC', standardPrice: 530, eidPrice: 397, badge: 'Value Pack', image: '/ucPack2.png' },
+            { name: '210 UC', standardPrice: 620, eidPrice: 465, badge: 'Value Pack', image: '/ucPack3.png' },
+            { name: '240 UC', standardPrice: 695, eidPrice: 521, badge: 'Value Pack', image: '/ucPack3.png' },
+            { name: '270 UC', standardPrice: 780, eidPrice: 585, badge: 'Value Pack', image: '/ucPack3.png' },
+            { name: '325 UC', standardPrice: 850, eidPrice: 837, badge: 'Royale Pass Elite', image: '/ucPack4.png' },
+            { name: '355 UC', standardPrice: 950, eidPrice: 712, badge: 'Bonus Deal', image: '/ucPack4.png' },
+            { name: '385 UC', standardPrice: 1050, eidPrice: 787, badge: 'Bonus Deal', image: '/ucPack4.png' },
+            { name: '660 UC', standardPrice: 1680, eidPrice: 1260, badge: 'Elite Plus Pass', image: '/ucPack5.png' },
+            { name: '690 UC', standardPrice: 1800, eidPrice: 1350, badge: 'Super Value', image: '/ucPack5.png' },
+            { name: '720 UC', standardPrice: 1850, eidPrice: 1387, badge: 'Super Value', image: '/ucPack5.png' },
+            { name: '780 UC', standardPrice: 2050, eidPrice: 1537, badge: 'Super Value', image: '/ucPack6.png' },
+            { name: '985 UC', standardPrice: 2500, eidPrice: 1875, badge: 'Mega Pack', image: '/ucPack6.png' },
+            { name: '1800 UC', standardPrice: 4200, eidPrice: 3150, badge: 'Pro Gamer', image: '/ucPack6.png' },
+            { name: '2125 UC', standardPrice: 5000, eidPrice: 3750, badge: 'Whale Bundle', image: '/ucPack6.png' },
+            { name: '3850 UC', standardPrice: 8200, eidPrice: 6150, badge: 'Ultimate Stash', image: '/ucPack6.png' }
+        ];
+
+        function renderUCPackages() {
+            const container = document.getElementById('uc-packs-container');
+            if (!container) return;
+
+            container.innerHTML = ucPackages.map(pack => {
+                // Compute current applicable pricing structure dynamically based on event state ticker
+                const activePrice = isEidActive ? pack.eidPrice : pack.standardPrice;
+                const badgeLabel = isEidActive ? '🌙 0% Profit' : pack.badge;
+                
+                // Old price line strikeout styling
+                const priceDisplay = isEidActive 
+                    ? `<div class="text-base sm:text-xl font-bold text-emerald-400">${activePrice} Birr <span class="text-xs text-gray-500 font-normal line-through ml-1">${pack.standardPrice}</span></div>`
+                    : `<div class="text-base sm:text-xl font-semibold mt-1 sm:mt-2 text-white">${activePrice} Birr</div>`;
+
+                return `
+                    <div onclick="openModal('${pack.name}', ${activePrice})" 
+                        class="bg-slate-800 p-3 sm:p-5 rounded-lg border ${isEidActive ? 'border-amber-500/60 shadow-lg shadow-amber-500/5' : 'border-slate-700'} hover:border-amber-500 cursor-pointer text-center transition relative overflow-hidden">
+                        <img src="${pack.image}" alt="PUBG UC Pack" 
+                            class="w-24 h-24 sm:w-36 sm:h-36 mx-auto block hover:scale-110 transition-transform duration-300">
+                        <div class="p-2 sm:p-5 text-center">
+                            <div class="text-lg sm:text-2xl font-bold text-amber-400">${pack.name}</div>
+                            ${priceDisplay}
+                            <span class="text-[10px] sm:text-xs ${isEidActive ? 'bg-amber-500/20 text-amber-400 font-bold' : 'bg-red-500/20 text-red-400'} px-2 py-0.5 sm:py-1 rounded mt-2 inline-block">
+                                ${badgeLabel}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Fire initialization sequence
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCountdown();
+            renderUCPackages();
+        });
 
         function openModal(pack, price) {
             selectedPackage = pack;
             selectedPrice = price;
             
-            // Reset verification button to default state when reopening modal
             const verifyBtn = document.getElementById('verifyBtn');
             verifyBtn.innerText = 'Verify';
             verifyBtn.disabled = false;
             verifyBtn.className = "bg-amber-500 text-slate-900 px-4 font-bold rounded hover:bg-amber-400 transition text-sm";
             
-            // Ensure form step is visible and instructions are hidden on click
             document.getElementById('modalStepForm').classList.remove('hidden');
             document.getElementById('modalStepInstructions').classList.add('hidden');
             
@@ -148,7 +255,6 @@
                 priceEtb: selectedPrice
             };
 
-            // Post order details to database via Express Server
             const response = await fetch('/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -157,26 +263,21 @@
 
             const result = await response.json();
             if(result.success) {
-                // Populate instructions view with transfer details dynamically
                 document.getElementById('instructionPrice').innerText = selectedPrice.toLocaleString();
                 document.getElementById('instructionMethod').innerText = selectedMethod;
                 
-                // Hide all accounts first to clear previous states
                 document.getElementById('account-telebirr').classList.add('hidden');
                 document.getElementById('account-ebirr').classList.add('hidden');
                 document.getElementById('account-cbe').classList.add('hidden');
                 document.getElementById('account-golis').classList.add('hidden');
 
-                // Reveal only the chosen account row (matching select options: 'telebirr', 'ebirr', 'CBE', 'golis')
                 if (selectedMethod === 'telebirr') document.getElementById('account-telebirr').classList.remove('hidden');
                 if (selectedMethod === 'ebirr') document.getElementById('account-ebirr').classList.remove('hidden');
                 if (selectedMethod === 'CBE') document.getElementById('account-cbe').classList.remove('hidden');
                 if (selectedMethod === 'golis') document.getElementById('account-golis').classList.remove('hidden');
 
-                // Generate and mount the sharing URLs to the buttons dynamically using the active customer's Player ID
                 generateShareLinks(currentId);
 
-                // Toggle views securely: hide form fields, show success information layout 
                 document.getElementById('modalStepForm').classList.add('hidden');
                 document.getElementById('modalStepInstructions').classList.remove('hidden');
                 
@@ -196,7 +297,6 @@
                 return;
             }
 
-            // Visual loading state
             verifyBtn.innerText = 'Checking...';
             verifyBtn.disabled = true;
             nameInput.value = '';
@@ -206,7 +306,6 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    // Fill name input with the true in-game name and highlight it emerald
                     nameInput.value = result.nickname;
                     verifyBtn.innerText = 'Verified!';
                     verifyBtn.className = "bg-emerald-600 text-white px-4 font-bold rounded text-sm cursor-not-allowed";
@@ -222,65 +321,14 @@
             }
         }
 
-        // Centralized inventory control array
-        const ucPackages = [
-            { name: '30 UC', price: 120, badge: 'Popular', image: '/ucPack1.png' },
-            { name: '60 UC', price: 210, badge: 'Best Seller', image: '/ucPack1.png' },
-            { name: '90 UC', price: 295, badge: 'Value Pack', image: '/ucPack1.png' },
-            { name: '120 UC', price: 370, badge: 'Value Pack', image: '/ucPack2.png' },
-            { name: '150 UC', price: 450, badge: 'Value Pack', image: '/ucPack2.png' },
-            { name: '180 UC', price: 530, badge: 'Value Pack', image: '/ucPack2.png' },
-            { name: '210 UC', price: 620, badge: 'Value Pack', image: '/ucPack3.png' },
-            { name: '240 UC', price: 695, badge: 'Value Pack', image: '/ucPack3.png' },
-            { name: '270 UC', price: 780, badge: 'Value Pack', image: '/ucPack3.png' },
-            { name: '325 UC', price: 850, badge: 'Royale Pass Elite', image: '/ucPack4.png' },
-            { name: '355 UC', price: 950, badge: 'Bonus Deal', image: '/ucPack4.png' },
-            { name: '385 UC', price: 1050, badge: 'Bonus Deal', image: '/ucPack4.png' },
-            { name: '660 UC', price: 1680, badge: 'Elite Plus Pass', image: '/ucPack5.png' },
-            { name: '690 UC', price: 1800, badge: 'Super Value', image: '/ucPack5.png' },
-            { name: '720 UC', price: 1850, badge: 'Super Value', image: '/ucPack5.png' },
-            { name: '780 UC', price: 2050, badge: 'Super Value', image: '/ucPack6.png' },
-            { name: '985 UC', price: 2500, badge: 'Mega Pack', image: '/ucPack6.png' },
-            { name: '1800 UC', price: 4200, badge: 'Pro Gamer', image: '/ucPack6.png' },
-            { name: '2125 UC', price: 5000, badge: 'Whale Bundle', image: '/ucPack6.png' },
-            { name: '3850 UC', price: 8200, badge: 'Ultimate Stash', image: '/ucPack6.png' }
-        ];
-
-        // Loop through your list and render cards onto your screen instantly
-        function renderUCPackages() {
-            const container = document.getElementById('uc-packs-container');
-            if (!container) return;
-
-            container.innerHTML = ucPackages.map(pack => `
-                <div onclick="openModal('${pack.name}', ${pack.price})" 
-                    class="bg-slate-800 p-3 sm:p-5 rounded-lg border border-slate-700 hover:border-amber-500 cursor-pointer text-center transition">
-                    <img src="${pack.image}" alt="PUBG UC Pack" 
-                        class="w-24 h-24 sm:w-36 sm:h-36 mx-auto block hover:scale-110 transition-transform duration-300">
-                    <div class="p-2 sm:p-5 text-center">
-                        <div class="text-lg sm:text-2xl font-bold text-amber-400">${pack.name}</div>
-                        <div class="text-base sm:text-xl font-semibold mt-1 sm:mt-2">${pack.price} Birr</div>
-                        <span class="text-[10px] sm:text-xs bg-red-500/20 text-red-400 px-2 py-0.5 sm:py-1 rounded mt-2 inline-block">
-                            ${pack.badge}
-                        </span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Fire the render loop when the web content loads up!
-        document.addEventListener('DOMContentLoaded', renderUCPackages);
-
         function generateShareLinks(playerId) {
-            // Dynamically scales to production domain (e.g., https://pubg-uc-shop.onrender.com)
             const currentDomain = window.location.origin; 
             const shopUrl = `${currentDomain}/?ref=${playerId}`;
-            
             const textMessage = `🔥 Hey! Get your PUBG UC instantly on this trusted store. Use my link to buy directly: ${shopUrl}`;
             
             const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textMessage)}`;
             const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shopUrl)}&text=${encodeURIComponent(textMessage)}`;
             
-            // Safely verify existence before execution injection
             const whatsappBtn = document.getElementById('share-whatsapp');
             const telegramBtn = document.getElementById('share-telegram');
             
