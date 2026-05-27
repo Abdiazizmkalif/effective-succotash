@@ -151,7 +151,7 @@ app.get('/api/lookup-player/:id', async (req, res) => {
     const playerId = req.params.id;
 
     try {
-        const response = await fetch(`https://check-id-game.p.rapidapi.com/api/rapid_api/cekpubgmobile/${playerId}`, {
+        const response = await fetch(`https://id-game-checker.p.rapidapi.com/pubgm-global/${playerId}`, {
             method: 'GET',
             headers: {
                 'X-RapidAPI-Key': '16d66caaebmsh0666b97970080efp14991ajsnb0ffd9a9b2ae', 
