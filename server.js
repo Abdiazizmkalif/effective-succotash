@@ -155,7 +155,6 @@ app.get('/api/lookup-player/:id', async (req, res) => {
             method: 'GET',
             headers: {
                 'X-RapidAPI-Key': '16d66caaebmsh0666b97970080efp14991ajsnb0ffd9a9b2ae', 
-                // ✅ FIXED: Matched host string exactly to the API gateway documentation
                 'X-RapidAPI-Host': 'id-game-checker.p.rapidapi.com',
                 'Content-Type': 'application/json'
             }
@@ -164,21 +163,23 @@ app.get('/api/lookup-player/:id', async (req, res) => {
         const data = await response.json();
         console.log("RapidAPI Raw Response:", data);
 
-        // Map the API's specific username field back to your client-side framework
-        if (response.ok && data) {
-            // Note: Check your server terminal console log to ensure if the key is 'username', 'nickname', or 'name'
-            const inGameName = data.username || data.nickname || data.name; 
-            
-            if (inGameName) {
-                return res.json({ success: true, nickname: inGameName });
-            }
-        }
-        
-        return res.json({ success: false, message: 'Player not found' });
+        // 🛠️ DYNAMIC FALLBACK CHECK: 
+        // Extracts username whether it is in data.data.username, data.username, or data.nickname
+        const foundUsername = 
+            (data?.data?.username) || 
+            (data?.username) || 
+            (data?.nickname);
 
+        if (foundUsername) {
+            return res.json({ success: true, nickname: foundUsername });
+        } else {
+            // Log what went wrong internally so you can see it in terminal
+            console.log(`Lookup failed for ID ${playerId}. Structure didn't match expected values.`);
+            return res.json({ success: false, message: 'Character ID not found' });
+        }
     } catch (error) {
-        console.error("Verification Route Error:", error);
-        return res.status(500).json({ success: false, message: 'Internal server lookup failure' });
+        console.error('RapidAPI connection system failure:', error);
+        return res.status(500).json({ success: false, message: 'Verification lookup down' });
     }
 });
 
