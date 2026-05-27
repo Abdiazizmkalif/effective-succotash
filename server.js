@@ -155,7 +155,7 @@ app.get('/api/lookup-player/:id', async (req, res) => {
             method: 'GET',
             headers: {
                 'X-RapidAPI-Key': '16d66caaebmsh0666b97970080efp14991ajsnb0ffd9a9b2ae', 
-                'X-RapidAPI-Host': 'check-id-game.p.rapidapi.com',
+                'X-RapidAPI-Host': 'id-game-checker.p.rapidapi.com',
                 'Content-Type': 'application/json'
             }
         });
