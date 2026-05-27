@@ -65,7 +65,7 @@
                             <option value="ebirr">E-Birr</option>
                             <option value="telebirr">Telebirr</option>
                             <option value="CBE">Commercial Bank of Ethiopia (CBE)</option>
-                            <option value="golis">Golis (Sahal / Waafi)</option> 
+                            <!-- <option value="golis">Golis (Sahal / Waafi)</option>  -->
                         </select>
                     </div>
 
@@ -79,7 +79,7 @@
             <div id="modalStepInstructions" class="hidden text-center space-y-4">
                 <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">✓</div>
                 <h2 class="text-xl font-bold text-emerald-400">Dalabkaaga waa la diiwaangaliyay!</h2>
-                <p class="text-sm text-gray-300">Si aad u dhammaystirto iibsashadaada, fadlan si degdeg ah u wareeji (transfer) lacagtan soo socota:</p>
+                <p class="text-sm text-gray-300">Si aad u dhammaystirto iibsashadaada, fadlan si degdeg ah u dir lacagtan hoose:</p>
                 
                 <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-2 text-left">
                     <p class="text-sm text-gray-400">Amount: <span id="instructionPrice" class="text-white font-bold text-base"></span> Birr</p>
@@ -87,10 +87,10 @@
                     <hr class="border-slate-800 my-2">
                     
                     <p class="text-xs font-semibold text-amber-400">Halkan ku dir lacagta:</p>
-                    <p id="account-telebirr" class="text-sm text-slate-300 hidden">📱 <span class="font-bold text-white">Telebirr:</span> 0912345678 (Abdiasis Mohamed)</p>
-                    <p id="account-ebirr" class="text-sm text-slate-300 hidden">📱 <span class="font-bold text-white">E-Birr:</span> 0912345678 (Abdiasis Mohamed)</p>
-                    <p id="account-cbe" class="text-sm text-slate-300 hidden">🏦 <span class="font-bold text-white">CBE Account:</span> 1000123456789 (Abdiasis Mohamed)</p>
-                    <p id="account-golis" class="text-sm text-slate-300 hidden">📞 <span class="font-bold text-white">Golis (Sahal/Waafi):</span> 0912345678 (Abdiasis Mohamed)</p>
+                    <p id="account-telebirr" class="text-sm text-slate-300 hidden">📱 <span class="font-bold text-white">Telebirr:</span> 0961408302 (Abdiasis Mohamed)</p>
+                    <p id="account-ebirr" class="text-sm text-slate-300 hidden">📱 <span class="font-bold text-white">E-Birr:</span> 0961408302 (Abdiasis Mohamed)</p>
+                    <p id="account-cbe" class="text-sm text-slate-300 hidden">🏦 <span class="font-bold text-white">CBE Account:</span> 1000697852507 (Abdiasis Mohamed)</p>
+                    <!-- <p id="account-golis" class="text-sm text-slate-300 hidden">📞 <span class="font-bold text-white">Golis (Sahal/Waafi):</span> 0912345678 (Abdiasis Mohamed)</p> -->
                 </div>
                 
                 <p class="text-xs text-amber-500 bg-amber-500/10 p-2 rounded">Xidhmadaadu waxay ku soo gaadhi 15 daqiiqo gudaheed.</p>
@@ -270,12 +270,12 @@
                 document.getElementById('account-telebirr').classList.add('hidden');
                 document.getElementById('account-ebirr').classList.add('hidden');
                 document.getElementById('account-cbe').classList.add('hidden');
-                document.getElementById('account-golis').classList.add('hidden');
+                // document.getElementById('account-golis').classList.add('hidden');
 
                 if (selectedMethod === 'telebirr') document.getElementById('account-telebirr').classList.remove('hidden');
                 if (selectedMethod === 'ebirr') document.getElementById('account-ebirr').classList.remove('hidden');
                 if (selectedMethod === 'CBE') document.getElementById('account-cbe').classList.remove('hidden');
-                if (selectedMethod === 'golis') document.getElementById('account-golis').classList.remove('hidden');
+                // if (selectedMethod === 'golis') document.getElementById('account-golis').classList.remove('hidden');
 
                 generateShareLinks(currentId);
 
